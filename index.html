@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Elite Rankings | MedSpa Quotes</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Ensuring selection visibility */
+        .opt-btn.selected {
+            border: 2px solid #6f42c1 !important;
+            background-color: #f3e8ff !important;
+            box-shadow: 0 4px 10px rgba(111, 66, 193, 0.2);
+        }
+        .form-step { display: none; }
+        .form-step.active { display: block; }
+    </style>
 </head>
 <body>
 
@@ -22,13 +32,13 @@
             <h2>Select a Treatment</h2>
             <p>What are you interested in?</p>
             <div class="option-grid">
-                <button type="button" class="opt-btn" id="btn-Botox" onclick="setService('Botox', 'Botox & Fillers', 'Botox and dermal fillers are non-surgical treatments designed to diminish facial lines and restore volume. Botox temporarily relaxes the muscles that cause wrinkles (like crow\'s feet and forehead lines), while fillers use substances like hyaluronic acid to plump lips, enhance contours, and soften deep folds.')">Botox & Fillers</button>
+                <button type="button" class="opt-btn" id="btn-Botox" onclick="setService('Botox', 'Botox & Fillers', 'Botox and dermal fillers are non-surgical treatments designed to diminish facial lines and restore volume. Botox temporarily relaxes the muscles that cause wrinkles, while fillers plump lips and soften deep folds.')">Botox & Fillers</button>
                 
-                <button type="button" class="opt-btn" id="btn-Laser" onclick="setService('Laser', 'Laser Treatments', 'Our laser services include permanent hair reduction and skin resurfacing. Laser hair removal targets hair follicles to prevent future growth, while resurfacing lasers treat sun damage, acne scars, and uneven texture by stimulating new collagen production for smoother, clearer skin.')">Laser Treatments</button>
+                <button type="button" class="opt-btn" id="btn-Laser" onclick="setService('Laser', 'Laser Treatments', 'Our laser services include permanent hair reduction and skin resurfacing. Laser hair removal targets hair follicles to prevent future growth, while resurfacing lasers treat sun damage and acne scars.')">Laser Treatments</button>
                 
-                <button type="button" class="opt-btn" id="btn-Body" onclick="setService('Body', 'Body Contouring', 'Body contouring involves non-invasive technologies like CoolSculpting or EMSculpt to shape and tone the body. These treatments target stubborn fat cells that are resistant to diet and exercise or use electromagnetic energy to strengthen and define muscles in the abdomen, glutes, and arms.')">Body Contouring</button>
+                <button type="button" class="opt-btn" id="btn-Body" onclick="setService('Body', 'Body Contouring', 'Body contouring involves non-invasive technologies to shape and tone the body. These treatments target stubborn fat cells or use electromagnetic energy to strengthen and define muscles.')">Body Contouring</button>
                 
-                <button type="button" class="opt-btn" id="btn-Skin" onclick="setService('Skin', 'Facials & Peels', 'Clinical facials and chemical peels provide deep exfoliation and skin nutrition. Whether you are looking to treat active acne, reduce hyperpigmentation, or achieve a glow before an event, these treatments use medical-grade ingredients to remove dead skin cells and reveal a fresh, rejuvenated complexion.')">Facials & Peels</button>
+                <button type="button" class="opt-btn" id="btn-Skin" onclick="setService('Skin', 'Facials & Peels', 'Clinical facials and chemical peels provide deep exfoliation. These treatments use medical-grade ingredients to remove dead skin cells and reveal a fresh, rejuvenated complexion.')">Facials & Peels</button>
             </div>
             <button type="button" class="next-btn" style="margin-top:20px; width:100%; display:none;" id="next1" onclick="moveStep(2)">Next</button>
         </div>
@@ -37,21 +47,20 @@
             <h2 id="info-title">Treatment Details</h2>
             <div class="info-box">
                 <p id="info-text"></p>
-                <p style="font-size: 0.9em; color: #666; margin-top: 10px;"><em>*Specific results vary by provider and individual skin type.</em></p>
             </div>
-            <div class="btn-group">
-                <button type="button" class="back-btn" onclick="moveStep(1)">Back</button>
-                <button type="button" class="next-btn" onclick="moveStep(3)">Looks Good, Next</button>
+            <div class="btn-group" style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="button" class="back-btn" onclick="moveStep(1)" style="flex: 1;">Back</button>
+                <button type="button" class="next-btn" onclick="moveStep(3)" style="flex: 2;">Looks Good, Next</button>
             </div>
         </div>
 
         <div class="form-step" id="step3">
             <h2>Your Location</h2>
             <p>Where should we find providers for you?</p>
-            <input type="text" id="zipInput" placeholder="Enter Zip Code">
-            <div class="btn-group">
-                <button type="button" class="back-btn" onclick="moveStep(2)">Back</button>
-                <button type="button" class="next-btn" onclick="saveZipAndNext()">Next</button>
+            <input type="text" id="zipInput" placeholder="Enter Zip Code" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd;">
+            <div class="btn-group" style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="button" class="back-btn" onclick="moveStep(2)" style="flex: 1;">Back</button>
+                <button type="button" class="next-btn" onclick="saveZipAndNext()" style="flex: 2;">Next</button>
             </div>
         </div>
 
@@ -69,6 +78,7 @@
 </div>
 
 <script>
+    // Global state to keep information saved
     let currentStep = 1;
     const totalSteps = 4;
     let selections = {
@@ -80,49 +90,43 @@
 
     const GHL_BASE_URL = "https://api.leadconnectorhq.com/widget/form/HSCelRuDZgou4EZ8Z6cB";
 
-    function updateProgress() {
-        const progress = document.getElementById('progress');
-        const progressPercentage = ((currentStep - 1) / (totalSteps - 1)) * 100;
-        progress.style.width = progressPercentage + "%";
-    }
-
     function setService(id, displayName, desc) {
+        // Save to global selections
         selections.requested_service = id;
         selections.display_name = displayName;
         selections.description = desc;
         
-        // Highlight selection
-        document.querySelectorAll('.opt-btn').forEach(btn => btn.classList.remove('selected'));
+        // Visual feedback: remove 'selected' from all, add to clicked
+        document.querySelectorAll('.opt-btn').forEach(btn => {
+            btn.classList.remove('selected');
+        });
         document.getElementById(`btn-${id}`).classList.add('selected');
         
-        // Show the Next button
+        // Make the Next button visible
         document.getElementById('next1').style.display = 'block';
         
-        // Prep Step 2 content
+        // Pre-fill the info for Step 2
         document.getElementById('info-title').innerText = displayName;
         document.getElementById('info-text').innerText = desc;
     }
 
     function saveZipAndNext() {
         const zipVal = document.getElementById('zipInput').value;
-        if(!zipVal) return alert("Please enter a zip code");
+        if(!zipVal) {
+            alert("Please enter a zip code");
+            return;
+        }
         selections.zip = zipVal;
         moveStep(4);
     }
 
     function moveStep(targetStep) {
-        document.querySelectorAll('.form-step').forEach(step => step.classList.remove('active'));
+        // 1. Hide current step
+        document.getElementById(`step${currentStep}`).classList.remove('active');
+        
+        // 2. Set new step
         currentStep = targetStep;
         
+        // 3. If it's the final step, load the iframe with the saved data
         if (currentStep === 4) {
-            const finalUrl = `${GHL_BASE_URL}?requested_service=${encodeURIComponent(selections.requested_service)}&zip=${encodeURIComponent(selections.zip)}`;
-            document.getElementById('ghl-iframe').src = finalUrl;
-        }
-        
-        document.getElementById(`step${currentStep}`).classList.add('active');
-        updateProgress();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-</script>
-</body>
-</html>
+            const finalUrl = `${GHL_BASE_URL}?requested_service=${encodeURIComponent(selections.requested_service)}
