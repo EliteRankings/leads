@@ -78,7 +78,6 @@
 </div>
 
 <script>
-    // Global state to keep information saved
     let currentStep = 1;
     const totalSteps = 4;
     let selections = {
@@ -88,26 +87,59 @@
         description: ''
     };
 
+    // Your GHL URL
     const GHL_BASE_URL = "https://api.leadconnectorhq.com/widget/form/HSCelRuDZgou4EZ8Z6cB";
 
     function setService(id, displayName, desc) {
-        // Save to global selections
+        console.log("Selecting service:", id); // This helps you debug in the browser console
+        
         selections.requested_service = id;
         selections.display_name = displayName;
         selections.description = desc;
         
-        // Visual feedback: remove 'selected' from all, add to clicked
+        // 1. Remove 'selected' from all buttons
         document.querySelectorAll('.opt-btn').forEach(btn => {
             btn.classList.remove('selected');
         });
-        document.getElementById(`btn-${id}`).classList.add('selected');
+
+        // 2. Add 'selected' to the one you clicked
+        const selectedBtn = document.getElementById(`btn-${id}`);
+        if (selectedBtn) {
+            selectedBtn.classList.add('selected');
+        } else {
+            console.error("Could not find button with ID:", `btn-${id}`);
+        }
         
-        // Make the Next button visible
-        document.getElementById('next1').style.display = 'block';
+        // 3. Show the Next button
+        const nextBtn = document.getElementById('next1');
+        if (nextBtn) nextBtn.style.display = 'block';
         
-        // Pre-fill the info for Step 2
+        // 4. Fill the info for Step 2
         document.getElementById('info-title').innerText = displayName;
         document.getElementById('info-text').innerText = desc;
+    }
+
+    function moveStep(targetStep) {
+        // Hide current
+        document.getElementById(`step${currentStep}`).classList.remove('active');
+        
+        // Update number
+        currentStep = targetStep;
+        
+        // Show new
+        const nextStepEl = document.getElementById(`step${currentStep}`);
+        if (nextStepEl) {
+            nextStepEl.classList.add('active');
+        }
+
+        // If final step, load Iframe
+        if (currentStep === 4) {
+            const finalUrl = `${GHL_BASE_URL}?requested_service=${encodeURIComponent(selections.requested_service)}&zip=${encodeURIComponent(selections.zip)}`;
+            document.getElementById('ghl-iframe').src = finalUrl;
+        }
+        
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function saveZipAndNext() {
@@ -120,13 +152,11 @@
         moveStep(4);
     }
 
-    function moveStep(targetStep) {
-        // 1. Hide current step
-        document.getElementById(`step${currentStep}`).classList.remove('active');
-        
-        // 2. Set new step
-        currentStep = targetStep;
-        
-        // 3. If it's the final step, load the iframe with the saved data
-        if (currentStep === 4) {
-            const finalUrl = `${GHL_BASE_URL}?requested_service=${encodeURIComponent(selections.requested_service)}
+    function updateProgress() {
+        const progress = document.getElementById('progress');
+        if (progress) {
+            const percentage = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            progress.style.width = percentage + "%";
+        }
+    }
+</script>
