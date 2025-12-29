@@ -1,62 +1,57 @@
-:root {
-    --primary: #d63384; /* Elite Pink */
-    --secondary: #6f42c1; /* Elite Purple */
-    --bg: #fdfcfe;
-    --text: #2d1b33;
+/* --- CRITICAL ADDITIONS --- */
+
+/* 1. Hide steps by default */
+.form-step {
+    display: none;
 }
 
-body {
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #fdfcfe 0%, #f3e8ff 100%);
-    display: flex; justify-content: center; align-items: center;
-    min-height: 100vh; margin: 0;
+/* 2. Show the active step */
+.form-step.active {
+    display: block !important;
 }
 
-.brand-logo {
-    display: block;
-    margin: 0 auto 20px;
-    max-width: 120px; /* Adjust based on your logo size */
+/* 3. The 'Stay Selected' Style */
+.opt-btn.selected {
+    border-color: var(--secondary) !important;
+    background: #f3e8ff !important;
+    box-shadow: 0 4px 12px rgba(111, 66, 193, 0.15);
 }
 
-.form-container {
-    background: white;
-    width: 90%; max-width: 500px;
-    padding: 40px;
-    border-radius: 24px;
-    box-shadow: 0 20px 40px rgba(111, 66, 193, 0.1);
-    border: 1px solid rgba(214, 51, 132, 0.1);
+/* 4. Fix for Option Grid Layout */
+.option-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two columns */
+    gap: 15px;
+    margin-bottom: 20px;
 }
 
-.progress-bar {
-    height: 100%; width: 0%;
-    background: linear-gradient(to right, var(--primary), var(--secondary));
-    border-radius: 10px; transition: 0.4s ease;
-}
-
-.opt-btn {
-    padding: 18px;
-    border: 2px solid #f0f0f0;
-    background: white;
+/* 5. Info Box Styling */
+.info-box {
+    background: #fdf2f8;
+    padding: 20px;
     border-radius: 12px;
-    cursor: pointer;
-    font-weight: 600;
-    color: var(--text);
-    transition: all 0.3s ease;
+    border-left: 5px solid var(--primary);
+    margin: 20px 0;
 }
 
-.opt-btn:hover {
-    border-color: var(--primary);
-    background: rgba(214, 51, 132, 0.05);
-    transform: translateY(-2px);
+/* 6. Button Grouping for Back/Next */
+.btn-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.back-btn {
+    background: #f0f0f0;
+    color: var(--text);
+    border: none;
+    padding: 15px 25px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    flex: 1;
 }
 
 .next-btn {
-    background: linear-gradient(to right, var(--primary), var(--secondary));
-    color: white; border: none; padding: 15px 30px;
-    border-radius: 10px; cursor: pointer; font-weight: bold;
-}
-
-input {
-    width: 100%; padding: 15px; margin-bottom: 20px;
-    border: 2px solid #eee; border-radius: 10px; font-size: 16px;
+    flex: 2; /* Makes Next button wider than Back */
 }
