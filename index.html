@@ -3,54 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Get MedSpa Quotes</title>
+    <title>Elite Rankings | MedSpa Quotes</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="form-container">
+    <div class="logo-container">
+        <img src="logo.png" alt="Elite Rankings Logo" class="brand-logo">
+    </div>
+
     <div class="progress-container">
         <div class="progress-bar" id="progress"></div>
     </div>
 
-    <form id="leadForm">
+    <div id="multiStepForm">
         <div class="form-step active" id="step1">
             <h2>Select a Treatment</h2>
-            <p>Choose the service you are interested in.</p>
+            <p>What service are you interested in?</p>
             <div class="option-grid">
-                <button type="button" class="opt-btn" onclick="nextStep('service', 'Botox')">Botox & Fillers</button>
-                <button type="button" class="opt-btn" onclick="nextStep('service', 'Laser')">Laser Treatments</button>
-                <button type="button" class="opt-btn" onclick="nextStep('service', 'Body')">Body Contouring</button>
-                <button type="button" class="opt-btn" onclick="nextStep('service', 'Skin')">Facials & Peels</button>
+                <button type="button" class="opt-btn" onclick="nextStep('requested_service', 'Botox')">Botox & Fillers</button>
+                <button type="button" class="opt-btn" onclick="nextStep('requested_service', 'Laser')">Laser Treatments</button>
+                <button type="button" class="opt-btn" onclick="nextStep('requested_service', 'Body')">Body Contouring</button>
+                <button type="button" class="opt-btn" onclick="nextStep('requested_service', 'Skin')">Facials & Peels</button>
             </div>
         </div>
 
         <div class="form-step" id="step2">
             <h2>Your Location</h2>
             <p>Where should we find providers?</p>
-            <input type="text" id="zip" placeholder="Enter Zip Code" required>
+            <input type="text" id="zipInput" placeholder="Enter Zip Code">
             <div class="btn-group">
                 <button type="button" class="back-btn" onclick="prevStep()">Back</button>
-                <button type="button" class="next-btn" onclick="nextStep()">Next</button>
+                <button type="button" class="next-btn" onclick="saveZipAndNext()">Next</button>
             </div>
         </div>
 
         <div class="form-step" id="step3">
             <h2>Final Details</h2>
-            <p>Our top-rated medspas will send you pricing.</p>
-            <input type="text" id="name" placeholder="Full Name" required>
-            <input type="email" id="email" placeholder="Email Address" required>
-            <input type="tel" id="phone" placeholder="Phone Number" required>
-            
-            <button type="submit" class="submit-btn">Get My Free Quotes</button>
-            <p class="disclaimer">By submitting, you agree to our privacy policy and to be contacted by local providers.</p>
+            <p>Complete your request below:</p>
+            <iframe 
+                id="ghl-iframe"
+                src="" 
+                style="width:100%; height:500px; border:none; border-radius:8px;"
+                scrolling="no">
+            </iframe>
         </div>
-    </form>
+    </div>
 </div>
 
 <script>
     let currentStep = 1;
     const totalSteps = 3;
+    let selections = {
+        requested_service: '',
+        zip: ''
+    };
+
+    const GHL_BASE_URL = "https://api.leadconnectorhq.com/widget/form/HSCelRuDZgou4EZ8Z6cB";
 
     function updateProgress() {
         const progress = document.getElementById('progress');
@@ -58,10 +68,25 @@
     }
 
     function nextStep(field, value) {
+        if(field) selections[field] = value;
+        
         document.getElementById(`step${currentStep}`).classList.remove('active');
         currentStep++;
+        
+        if (currentStep === 3) {
+            // Build the URL with parameters to auto-fill GHL
+            const finalUrl = `${GHL_BASE_URL}?requested_service=${encodeURIComponent(selections.requested_service)}&zip=${encodeURIComponent(selections.zip)}`;
+            document.getElementById('ghl-iframe').src = finalUrl;
+        }
+        
         document.getElementById(`step${currentStep}`).classList.add('active');
         updateProgress();
+    }
+
+    function saveZipAndNext() {
+        const zipVal = document.getElementById('zipInput').value;
+        if(!zipVal) return alert("Please enter a zip code");
+        nextStep('zip', zipVal);
     }
 
     function prevStep() {
@@ -70,12 +95,6 @@
         document.getElementById(`step${currentStep}`).classList.add('active');
         updateProgress();
     }
-
-    document.getElementById('leadForm').onsubmit = function(e) {
-        e.preventDefault();
-        alert("Lead submitted! Processing quotes...");
-    };
 </script>
-
 </body>
 </html>
