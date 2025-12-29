@@ -5,16 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Elite Rankings | MedSpa Quotes</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Ensuring selection visibility */
-        .opt-btn.selected {
-            border: 2px solid #6f42c1 !important;
-            background-color: #f3e8ff !important;
-            box-shadow: 0 4px 10px rgba(111, 66, 193, 0.2);
-        }
-        .form-step { display: none; }
-        .form-step.active { display: block; }
-    </style>
 </head>
 <body>
 
@@ -32,131 +22,10 @@
             <h2>Select a Treatment</h2>
             <p>What are you interested in?</p>
             <div class="option-grid">
-                <button type="button" class="opt-btn" id="btn-Botox" onclick="setService('Botox', 'Botox & Fillers', 'Botox and dermal fillers are non-surgical treatments designed to diminish facial lines and restore volume. Botox temporarily relaxes the muscles that cause wrinkles, while fillers plump lips and soften deep folds.')">Botox & Fillers</button>
+                <button type="button" class="opt-btn" id="btn-Botox" onclick="setService('Botox', 'Botox & Fillers', 'Botox and dermal fillers help smooth wrinkles and restore volume. Botox relaxes muscles that cause wrinkles, while fillers plump lips and soften deep folds.')">Botox & Fillers</button>
                 
-                <button type="button" class="opt-btn" id="btn-Laser" onclick="setService('Laser', 'Laser Treatments', 'Our laser services include permanent hair reduction and skin resurfacing. Laser hair removal targets hair follicles to prevent future growth, while resurfacing lasers treat sun damage and acne scars.')">Laser Treatments</button>
+                <button type="button" class="opt-btn" id="btn-Laser" onclick="setService('Laser', 'Laser Treatments', 'Laser services include permanent hair reduction and skin resurfacing to treat sun damage, acne scars, and uneven texture.')">Laser Treatments</button>
                 
-                <button type="button" class="opt-btn" id="btn-Body" onclick="setService('Body', 'Body Contouring', 'Body contouring involves non-invasive technologies to shape and tone the body. These treatments target stubborn fat cells or use electromagnetic energy to strengthen and define muscles.')">Body Contouring</button>
+                <button type="button" class="opt-btn" id="btn-Body" onclick="setService('Body', 'Body Contouring', 'Non-invasive technologies like CoolSculpting or EMSculpt to shape and tone the body by targeting stubborn fat or defining muscles.')">Body Contouring</button>
                 
-                <button type="button" class="opt-btn" id="btn-Skin" onclick="setService('Skin', 'Facials & Peels', 'Clinical facials and chemical peels provide deep exfoliation. These treatments use medical-grade ingredients to remove dead skin cells and reveal a fresh, rejuvenated complexion.')">Facials & Peels</button>
-            </div>
-            <button type="button" class="next-btn" style="margin-top:20px; width:100%; display:none;" id="next1" onclick="moveStep(2)">Next</button>
-        </div>
-
-        <div class="form-step" id="step2">
-            <h2 id="info-title">Treatment Details</h2>
-            <div class="info-box">
-                <p id="info-text"></p>
-            </div>
-            <div class="btn-group" style="display: flex; gap: 10px; margin-top: 20px;">
-                <button type="button" class="back-btn" onclick="moveStep(1)" style="flex: 1;">Back</button>
-                <button type="button" class="next-btn" onclick="moveStep(3)" style="flex: 2;">Looks Good, Next</button>
-            </div>
-        </div>
-
-        <div class="form-step" id="step3">
-            <h2>Your Location</h2>
-            <p>Where should we find providers for you?</p>
-            <input type="text" id="zipInput" placeholder="Enter Zip Code" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd;">
-            <div class="btn-group" style="display: flex; gap: 10px; margin-top: 20px;">
-                <button type="button" class="back-btn" onclick="moveStep(2)" style="flex: 1;">Back</button>
-                <button type="button" class="next-btn" onclick="saveZipAndNext()" style="flex: 2;">Next</button>
-            </div>
-        </div>
-
-        <div class="form-step" id="step4">
-            <h2>Final Details</h2>
-            <p>Complete your request to get your quotes:</p>
-            <iframe 
-                id="ghl-iframe"
-                src="" 
-                style="width:100%; height:850px; border:none; border-radius:8px;"
-                scrolling="auto">
-            </iframe>
-        </div>
-    </div>
-</div>
-
-<script>
-    let currentStep = 1;
-    const totalSteps = 4;
-    let selections = {
-        requested_service: '',
-        display_name: '',
-        zip: '',
-        description: ''
-    };
-
-    // Your GHL URL
-    const GHL_BASE_URL = "https://api.leadconnectorhq.com/widget/form/HSCelRuDZgou4EZ8Z6cB";
-
-    function setService(id, displayName, desc) {
-        console.log("Selecting service:", id); // This helps you debug in the browser console
-        
-        selections.requested_service = id;
-        selections.display_name = displayName;
-        selections.description = desc;
-        
-        // 1. Remove 'selected' from all buttons
-        document.querySelectorAll('.opt-btn').forEach(btn => {
-            btn.classList.remove('selected');
-        });
-
-        // 2. Add 'selected' to the one you clicked
-        const selectedBtn = document.getElementById(`btn-${id}`);
-        if (selectedBtn) {
-            selectedBtn.classList.add('selected');
-        } else {
-            console.error("Could not find button with ID:", `btn-${id}`);
-        }
-        
-        // 3. Show the Next button
-        const nextBtn = document.getElementById('next1');
-        if (nextBtn) nextBtn.style.display = 'block';
-        
-        // 4. Fill the info for Step 2
-        document.getElementById('info-title').innerText = displayName;
-        document.getElementById('info-text').innerText = desc;
-    }
-
-    function moveStep(targetStep) {
-        // Hide current
-        document.getElementById(`step${currentStep}`).classList.remove('active');
-        
-        // Update number
-        currentStep = targetStep;
-        
-        // Show new
-        const nextStepEl = document.getElementById(`step${currentStep}`);
-        if (nextStepEl) {
-            nextStepEl.classList.add('active');
-        }
-
-        // If final step, load Iframe
-        if (currentStep === 4) {
-            const finalUrl = `${GHL_BASE_URL}?requested_service=${encodeURIComponent(selections.requested_service)}&zip=${encodeURIComponent(selections.zip)}`;
-            document.getElementById('ghl-iframe').src = finalUrl;
-        }
-        
-        updateProgress();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function saveZipAndNext() {
-        const zipVal = document.getElementById('zipInput').value;
-        if(!zipVal) {
-            alert("Please enter a zip code");
-            return;
-        }
-        selections.zip = zipVal;
-        moveStep(4);
-    }
-
-    function updateProgress() {
-        const progress = document.getElementById('progress');
-        if (progress) {
-            const percentage = ((currentStep - 1) / (totalSteps - 1)) * 100;
-            progress.style.width = percentage + "%";
-        }
-    }
-</script>
+                <button type="button" class="opt-btn" id="btn-Skin" onclick="setService('Skin', 'Facials & Peels', 'Clinical fac
