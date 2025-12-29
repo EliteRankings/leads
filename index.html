@@ -10,7 +10,7 @@
 
 <div class="form-container">
     <div class="logo-container">
-        <img src="images/logoback.png" alt="Elite Rankings Logo" class="brand-logo">
+        <img src="images/logo.png.png" alt="Elite Rankings Logo" class="brand-logo">
     </div>
 
     <div class="progress-container">
@@ -20,34 +20,106 @@
     <div id="multiStepForm">
         <div class="form-step active" id="step1">
             <h2>Select a Treatment</h2>
-            <p>Click a service to learn more:</p>
+            <p>What are you interested in?</p>
             <div class="option-grid">
-                <button type="button" class="opt-btn" onclick="selectTreatment('Botox', 'Botox and Fillers help smooth wrinkles and restore volume for a youthful glow.')">Botox & Fillers</button>
-                <button type="button" class="opt-btn" onclick="selectTreatment('Laser', 'Laser treatments provide permanent hair reduction and skin resurfacing.')">Laser Treatments</button>
-                <button type="button" class="opt-btn" onclick="selectTreatment('Body', 'Body contouring uses non-invasive tech to freeze fat and tone muscle.')">Body Contouring</button>
-                <button type="button" class="opt-btn" onclick="selectTreatment('Skin', 'Facials and clinical peels deeply cleanse and rejuvenate your skin.')">Facials & Peels</button>
+                <button type="button" class="opt-btn" id="btn-Botox" onclick="setService('Botox', 'Botox and Fillers help smooth wrinkles and restore volume for a youthful glow.')">Botox & Fillers</button>
+                <button type="button" class="opt-btn" id="btn-Laser" onclick="setService('Laser', 'Laser treatments provide permanent hair reduction and skin resurfacing.')">Laser Treatments</button>
+                <button type="button" class="opt-btn" id="btn-Body" onclick="setService('Body', 'Body contouring uses non-invasive tech to freeze fat and tone muscle.')">Body Contouring</button>
+                <button type="button" class="opt-btn" id="btn-Skin" onclick="setService('Skin', 'Facials and clinical peels deeply cleanse and rejuvenate your skin.')">Facials & Peels</button>
             </div>
-            
-            <div id="treatment-info" class="info-box" style="display:none; margin-top: 20px;">
-                <p id="info-text" style="font-style: italic; color: #666;"></p>
-                <button type="button" class="next-btn" onclick="goToStep2()" style="width: 100%; margin-top: 10px;">Confirm & Next</button>
-            </div>
+            <button type="button" class="next-btn" style="margin-top:20px; width:100%; display:none;" id="next1" onclick="moveStep(2)">Next</button>
         </div>
 
         <div class="form-step" id="step2">
-            <h2>Your Location</h2>
-            <p>Where should we find providers?</p>
-            <input type="text" id="zipInput" placeholder="Enter Zip Code">
+            <h2 id="info-title">About Your Selection</h2>
+            <div class="info-box">
+                <p id="info-text"></p>
+            </div>
             <div class="btn-group">
-                <button type="button" class="back-btn" onclick="prevStep()">Back</button>
-                <button type="button" class="next-btn" onclick="saveZipAndNext()">Next</button>
+                <button type="button" class="back-btn" onclick="moveStep(1)">Back</button>
+                <button type="button" class="next-btn" onclick="moveStep(3)">Looks Good, Next</button>
             </div>
         </div>
 
         <div class="form-step" id="step3">
+            <h2>Your Location</h2>
+            <p>Where should we find providers?</p>
+            <input type="text" id="zipInput" placeholder="Enter Zip Code">
+            <div class="btn-group">
+                <button type="button" class="back-btn" onclick="moveStep(2)">Back</button>
+                <button type="button" class="next-btn" onclick="saveZipAndNext()">Next</button>
+            </div>
+        </div>
+
+        <div class="form-step" id="step4">
             <h2>Final Details</h2>
             <p>Complete your request below:</p>
             <iframe 
                 id="ghl-iframe"
                 src="" 
-                style="width:1
+                style="width:100%; height:850px; border:none; border-radius:8px;"
+                scrolling="auto">
+            </iframe>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentStep = 1;
+    const totalSteps = 4;
+    let selections = {
+        requested_service: '',
+        zip: '',
+        description: ''
+    };
+
+    const GHL_BASE_URL = "https://api.leadconnectorhq.com/widget/form/HSCelRuDZgou4EZ8Z6cB";
+
+    function updateProgress() {
+        const progress = document.getElementById('progress');
+        const progressPercentage = ((currentStep - 1) / (totalSteps - 1)) * 100;
+        progress.style.width = progressPercentage + "%";
+    }
+
+    function setService(service, desc) {
+        selections.requested_service = service;
+        selections.description = desc;
+        
+        // Highlight selection
+        document.querySelectorAll('.opt-btn').forEach(btn => btn.classList.remove('selected'));
+        document.getElementById(`btn-${service}`).classList.add('selected');
+        
+        // Show the Next button
+        document.getElementById('next1').style.display = 'block';
+        
+        // Prep Step 2 content
+        document.getElementById('info-title').innerText = service + " Details";
+        document.getElementById('info-text').innerText = desc;
+    }
+
+    function saveZipAndNext() {
+        const zipVal = document.getElementById('zipInput').value;
+        if(!zipVal) return alert("Please enter a zip code");
+        selections.zip = zipVal;
+        moveStep(4);
+    }
+
+    function moveStep(targetStep) {
+        // Hide all steps
+        document.querySelectorAll('.form-step').forEach(step => step.classList.remove('active'));
+        
+        currentStep = targetStep;
+        
+        // If final step, load Iframe
+        if (currentStep === 4) {
+            const finalUrl = `${GHL_BASE_URL}?requested_service=${encodeURIComponent(selections.requested_service)}&zip=${encodeURIComponent(selections.zip)}`;
+            document.getElementById('ghl-iframe').src = finalUrl;
+        }
+        
+        document.getElementById(`step${currentStep}`).classList.add('active');
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>        
