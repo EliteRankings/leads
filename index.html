@@ -49,7 +49,6 @@
         .option-grid {
             display: grid; grid-template-columns: 1fr 1fr;
             gap: 15px; margin: 20px 0;
-            position: relative; z-index: 20;
         }
 
         .opt-btn {
@@ -57,7 +56,6 @@
             background: white; border-radius: 12px;
             cursor: pointer; font-weight: 600;
             transition: all 0.2s ease; color: var(--dark);
-            outline: none;
         }
 
         .opt-btn:hover { border-color: var(--primary); background: #fff5fa; }
@@ -73,22 +71,137 @@
             background: linear-gradient(to right, var(--primary), var(--secondary));
             color: white; border: none; padding: 18px;
             border-radius: 12px; cursor: pointer; font-weight: bold;
-            width: 100%; font-size: 16px; margin-top: 20px;
+            width: 100%; font-size: 16px; margin-top: 10px;
         }
 
         .back-btn { background: #f0f0f0; border: none; padding: 18px; border-radius: 12px; cursor: pointer; font-weight: bold; flex: 1; }
-
         .btn-group { display: flex; gap: 10px; margin-top: 20px; }
 
         .info-box { background: #fdf2f8; padding: 25px; border-radius: 15px; border-left: 5px solid var(--primary); margin-bottom: 20px; line-height: 1.6; color: #333; }
-        .info-box h3 { color: var(--secondary); margin-top: 0; border-bottom: 1px solid rgba(111, 66, 193, 0.2); padding-bottom: 5px; }
-        .info-box h4 { color: var(--primary); margin: 15px 0 5px 0; }
+        .info-box h3 { color: var(--secondary); margin-top: 0; }
 
-        .comparison-table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.82em; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.85em; background: white; border-radius: 8px; overflow: hidden; }
         .comparison-table th { background: var(--secondary); color: white; padding: 10px; text-align: left; }
         .comparison-table td { padding: 10px; border-bottom: 1px solid #eee; vertical-align: top; }
 
         .form-step { display: none; }
-        .form-step.active { display: block !important; animation: fadeIn 0.4s; }
+        .form-step.active { display: block !important; }
 
-        input { width: 100%; padding: 15px; border: 2px solid
+        input { width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 12px; margin-bottom: 10px; box-sizing: border-box; }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <div class="logo-header">
+        <img src="images/logoback.png" alt="Elite Rankings" class="brand-logo">
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progress"></div>
+    </div>
+
+    <div class="content-area">
+        <div id="multiStepForm">
+            <div class="form-step active" id="step1">
+                <h2>Select a treatment you are interested in</h2>
+                <div class="option-grid">
+                    <button type="button" class="opt-btn" onclick="handleSelection(this, 'Botox')">Botox & Fillers</button>
+                    <button type="button" class="opt-btn" onclick="handleSelection(this, 'Laser')">Laser Treatments</button>
+                    <button type="button" class="opt-btn" onclick="handleSelection(this, 'Body')">Body Contouring</button>
+                    <button type="button" class="opt-btn" onclick="handleSelection(this, 'Skin')">Facials & Peels</button>
+                </div>
+                <button type="button" class="next-btn" id="nextStep1Btn" style="display:none;" onclick="moveStep(2)">Next</button>
+            </div>
+
+            <div class="form-step" id="step2">
+                <h2 id="info-title">Treatment Details</h2>
+                <div id="info-content"></div>
+                <div class="btn-group">
+                    <button type="button" class="back-btn" onclick="moveStep(1)">Back</button>
+                    <button type="button" class="next-btn" onclick="moveStep(3)">Confirm & Next</button>
+                </div>
+            </div>
+
+            <div class="form-step" id="step3">
+                <h2>Your Location</h2>
+                <input type="text" id="zipInput" placeholder="Enter Zip Code">
+                <div class="btn-group">
+                    <button type="button" class="back-btn" onclick="moveStep(2)">Back</button>
+                    <button type="button" class="next-btn" onclick="saveZipAndNext()">Next</button>
+                </div>
+            </div>
+
+            <div class="form-step" id="step4">
+                <h2>Final Details</h2>
+                <iframe id="ghl-iframe" src="" style="width:100%; height:850px; border:none;" scrolling="auto"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // State management
+    let currentStep = 1;
+    let selections = { service: '', zip: '' };
+    const GHL_BASE_URL = "https://api.leadconnectorhq.com/widget/form/HSCelRuDZgou4EZ8Z6cB";
+
+    // Data - Wrapped in backticks to prevent apostrophe errors
+    const treatmentDetails = {
+        'Botox': `<div class="info-box"><h3>Injectables</h3><p>Focus on wrinkles and volume.</p></div>`,
+        'Laser': `<div class="info-box"><h3>Laser Technologies</h3><p>Focus on skin and hair removal.</p></div>`,
+        'Body': `<div class="info-box">
+            <h3>Body Contouring: Sculpt & Define</h3>
+            <p>Eliminate stubborn fat, tighten loose skin, and build muscle definition without surgery.</p>
+            <table class="comparison-table">
+                <thead><tr><th>Profile</th><th>Focus</th><th>Treatment</th></tr></thead>
+                <tbody>
+                    <tr><td>20s – 30s</td><td>Enhancement</td><td>Fat Freezing</td></tr>
+                    <tr><td>Post-Pregnancy</td><td>Restoration</td><td>EMS Muscle Toning</td></tr>
+                    <tr><td>40s – 50s</td><td>Toning</td><td>Radiofrequency</td></tr>
+                </tbody>
+            </table>
+            <p><strong>Size Rule:</strong> Best for candidates within 30 lbs of goal weight.</p>
+        </div>`,
+        'Skin': `<div class="info-box"><h3>Facials & Peels</h3><p>Focus on glow and correction.</p></div>`
+    };
+
+    function handleSelection(btn, serviceKey) {
+        // Clear old selections
+        document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+        
+        // Apply new selection
+        btn.classList.add('selected');
+        selections.service = serviceKey;
+
+        // Show Next Button
+        const nextBtn = document.getElementById('nextStep1Btn');
+        nextBtn.style.display = 'block';
+
+        // Update Step 2 text
+        document.getElementById('info-title').innerText = btn.innerText;
+        document.getElementById('info-content').innerHTML = treatmentDetails[serviceKey] || 'Details loading...';
+    }
+
+    function moveStep(targetStep) {
+        document.getElementById('step' + currentStep).style.display = 'none';
+        currentStep = targetStep;
+        document.getElementById('step' + currentStep).style.display = 'block';
+
+        if (currentStep === 4) {
+            document.getElementById('ghl-iframe').src = GHL_BASE_URL + '?requested_service=' + selections.service + '&zip=' + selections.zip;
+        }
+
+        document.getElementById('progress').style.width = ((currentStep - 1) / 3 * 100) + "%";
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function saveZipAndNext() {
+        const val = document.getElementById('zipInput').value;
+        if(!val) return alert("Enter Zip Code");
+        selections.zip = val;
+        moveStep(4);
+    }
+</script>
+</body>
+</html>
