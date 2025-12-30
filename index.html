@@ -9,7 +9,6 @@
             --primary: #d63384; 
             --secondary: #6f42c1; 
             --dark: #2d1b33;
-            --light: #fdfcfe;
         }
 
         body {
@@ -25,31 +24,16 @@
             border-radius: 24px;
             box-shadow: 0 25px 50px rgba(0,0,0,0.4);
             overflow: hidden;
-            position: relative;
         }
 
-        .logo-header {
-            background-color: var(--dark);
-            padding: 20px;
-            text-align: center;
-        }
-
-        .brand-logo {
-            max-height: 120px;
-            width: auto;
-            display: block;
-            margin: 0 auto;
-        }
-
-        .content-area { padding: 30px; position: relative; z-index: 10; }
+        .logo-header { background-color: var(--dark); padding: 20px; text-align: center; }
+        .brand-logo { max-height: 120px; width: auto; display: block; margin: 0 auto; }
+        .content-area { padding: 30px; }
 
         .progress-container { height: 6px; background: #eee; width: 100%; }
         .progress-bar { height: 100%; width: 0%; background: var(--primary); transition: 0.4s; }
 
-        .option-grid {
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 15px; margin: 20px 0;
-        }
+        .option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
 
         .opt-btn {
             padding: 18px; border: 2px solid #eee;
@@ -57,8 +41,6 @@
             cursor: pointer; font-weight: 600;
             transition: all 0.2s ease; color: var(--dark);
         }
-
-        .opt-btn:hover { border-color: var(--primary); background: #fff5fa; }
 
         .opt-btn.selected {
             background-color: var(--secondary) !important;
@@ -71,16 +53,17 @@
             background: linear-gradient(to right, var(--primary), var(--secondary));
             color: white; border: none; padding: 18px;
             border-radius: 12px; cursor: pointer; font-weight: bold;
-            width: 100%; font-size: 16px; margin-top: 10px;
+            width: 100%; font-size: 16px; margin-top: 20px;
         }
 
         .back-btn { background: #f0f0f0; border: none; padding: 18px; border-radius: 12px; cursor: pointer; font-weight: bold; flex: 1; }
         .btn-group { display: flex; gap: 10px; margin-top: 20px; }
 
         .info-box { background: #fdf2f8; padding: 25px; border-radius: 15px; border-left: 5px solid var(--primary); margin-bottom: 20px; line-height: 1.6; color: #333; }
-        .info-box h3 { color: var(--secondary); margin-top: 0; }
+        .info-box h3 { color: var(--secondary); margin-top: 0; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+        .info-box h4 { color: var(--primary); margin: 15px 0 5px 0; }
 
-        .comparison-table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.85em; background: white; border-radius: 8px; overflow: hidden; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.82em; background: white; border-radius: 8px; overflow: hidden; }
         .comparison-table th { background: var(--secondary); color: white; padding: 10px; text-align: left; }
         .comparison-table td { padding: 10px; border-bottom: 1px solid #eee; vertical-align: top; }
 
@@ -96,11 +79,9 @@
     <div class="logo-header">
         <img src="images/logoback.png" alt="Elite Rankings" class="brand-logo">
     </div>
-
     <div class="progress-container">
         <div class="progress-bar" id="progress"></div>
     </div>
-
     <div class="content-area">
         <div id="multiStepForm">
             <div class="form-step active" id="step1">
@@ -125,6 +106,7 @@
 
             <div class="form-step" id="step3">
                 <h2>Your Location</h2>
+                <p>Where should we find providers for you?</p>
                 <input type="text" id="zipInput" placeholder="Enter Zip Code">
                 <div class="btn-group">
                     <button type="button" class="back-btn" onclick="moveStep(2)">Back</button>
@@ -141,55 +123,91 @@
 </div>
 
 <script>
-    // State management
     let currentStep = 1;
     let selections = { service: '', zip: '' };
     const GHL_BASE_URL = "https://api.leadconnectorhq.com/widget/form/HSCelRuDZgou4EZ8Z6cB";
 
-    // Data - Wrapped in backticks to prevent apostrophe errors
     const treatmentDetails = {
-        'Botox': `<div class="info-box"><h3>Injectables</h3><p>Focus on wrinkles and volume.</p></div>`,
-        'Laser': `<div class="info-box"><h3>Laser Technologies</h3><p>Focus on skin and hair removal.</p></div>`,
-        'Body': `<div class="info-box">
-            <h3>Body Contouring: Sculpt & Define</h3>
-            <p>Eliminate stubborn fat, tighten loose skin, and build muscle definition without surgery.</p>
-            <table class="comparison-table">
-                <thead><tr><th>Profile</th><th>Focus</th><th>Treatment</th></tr></thead>
-                <tbody>
-                    <tr><td>20s – 30s</td><td>Enhancement</td><td>Fat Freezing</td></tr>
-                    <tr><td>Post-Pregnancy</td><td>Restoration</td><td>EMS Muscle Toning</td></tr>
-                    <tr><td>40s – 50s</td><td>Toning</td><td>Radiofrequency</td></tr>
-                </tbody>
-            </table>
-            <p><strong>Size Rule:</strong> Best for candidates within 30 lbs of goal weight.</p>
-        </div>`,
-        'Skin': `<div class="info-box"><h3>Facials & Peels</h3><p>Focus on glow and correction.</p></div>`
+        'Botox': `
+            <div class="info-box">
+                <h3>Injectables & Rejuvenation</h3>
+                <h4>Botox: Smooth & Refresh</h4>
+                <p><strong>The Goal:</strong> Relax muscles for a smoother, well-rested look.<br>
+                <strong>Best For:</strong> Forehead lines, crow’s feet, and frown lines.</p>
+                <table class="comparison-table">
+                    <thead><tr><th>Concern</th><th>Recommended</th></tr></thead>
+                    <tbody>
+                        <tr><td>Lines when smiling</td><td>Botox</td></tr>
+                        <tr><td>Hollow cheeks/thin lips</td><td>Fillers</td></tr>
+                    </tbody>
+                </table>
+                <p><strong>Age Guide:</strong> 20s-30s Prevention; 40s+ Restoration.</p>
+            </div>`,
+        'Laser': `
+            <div class="info-box">
+                <h3>Laser Skin Technologies</h3>
+                <h4>Laser Resurfacing: Reveal & Renew</h4>
+                <p><strong>Goal:</strong> Trigger collagen to remove damaged cells.<br>
+                <strong>Best For:</strong> Acne scars, wrinkles, and sun spots.</p>
+                <table class="comparison-table">
+                    <thead><tr><th>Treatment</th><th>Pros</th><th>Cons</th></tr></thead>
+                    <tbody>
+                        <tr><td>Resurfacing</td><td>Dramatic scar improvement.</td><td>Redness/peeling.</td></tr>
+                        <tr><td>Hair Removal</td><td>Permanent hair reduction.</td><td>Multiple sessions.</td></tr>
+                    </tbody>
+                </table>
+            </div>`,
+        'Body': `
+            <div class="info-box">
+                <h3>Body Contouring: Sculpt & Define</h3>
+                <p>Eliminate stubborn fat, tighten loose skin, and build muscle definition without surgery.</p>
+                <table class="comparison-table">
+                    <thead><tr><th>Profile</th><th>Focus</th><th>Best Treatment</th></tr></thead>
+                    <tbody>
+                        <tr><td>20s – 30s</td><td>Enhancement</td><td>Fat Freezing</td></tr>
+                        <tr><td>Post-Pregnancy</td><td>Restoration</td><td>EMS Muscle Toning</td></tr>
+                        <tr><td>40s – 50s</td><td>Toning</td><td>Radiofrequency</td></tr>
+                    </tbody>
+                </table>
+                <p><strong>The Size Rule:</strong> Best for candidates within 30 lbs of goal weight.</p>
+            </div>`,
+        'Skin': `
+            <div class="info-box">
+                <h3>Facials & Chemical Peels</h3>
+                <h4>Professional Facials: Glow & Maintain</h4>
+                <p><strong>Goal:</strong> Multi-step cleansing and exfoliation to maintain skin health.</p>
+                <table class="comparison-table">
+                    <thead><tr><th>Treatment</th><th>Pros</th><th>Cons</th></tr></thead>
+                    <tbody>
+                        <tr><td>Facials</td><td>Zero downtime; relaxing.</td><td>Subtle results.</td></tr>
+                        <tr><td>Peels</td><td>Targets deep pigment/acne.</td><td>Visible peeling.</td></tr>
+                    </tbody>
+                </table>
+                <p><strong>Age Guide:</strong> Teens Clearance; 30s Vitality; 50s Restoration.</p>
+            </div>`
     };
 
     function handleSelection(btn, serviceKey) {
-        // Clear old selections
         document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
-        
-        // Apply new selection
         btn.classList.add('selected');
         selections.service = serviceKey;
-
-        // Show Next Button
-        const nextBtn = document.getElementById('nextStep1Btn');
-        nextBtn.style.display = 'block';
-
-        // Update Step 2 text
+        document.getElementById('nextStep1Btn').style.display = 'block';
         document.getElementById('info-title').innerText = btn.innerText;
-        document.getElementById('info-content').innerHTML = treatmentDetails[serviceKey] || 'Details loading...';
+        document.getElementById('info-content').innerHTML = treatmentDetails[serviceKey];
     }
 
     function moveStep(targetStep) {
-        document.getElementById('step' + currentStep).style.display = 'none';
+        // HIDE ALL STEPS FIRST
+        document.querySelectorAll('.form-step').forEach(step => {
+            step.classList.remove('active');
+        });
+        
+        // SHOW ONLY THE TARGET STEP
+        document.getElementById('step' + targetStep).classList.add('active');
         currentStep = targetStep;
-        document.getElementById('step' + currentStep).style.display = 'block';
 
         if (currentStep === 4) {
-            document.getElementById('ghl-iframe').src = GHL_BASE_URL + '?requested_service=' + selections.service + '&zip=' + selections.zip;
+            document.getElementById('ghl-iframe').src = `${GHL_BASE_URL}?requested_service=${encodeURIComponent(selections.service)}&zip=${encodeURIComponent(selections.zip)}`;
         }
 
         document.getElementById('progress').style.width = ((currentStep - 1) / 3 * 100) + "%";
@@ -198,7 +216,7 @@
 
     function saveZipAndNext() {
         const val = document.getElementById('zipInput').value;
-        if(!val) return alert("Enter Zip Code");
+        if(!val) return alert("Please enter your zip code");
         selections.zip = val;
         moveStep(4);
     }
