@@ -21,20 +21,17 @@
 
         .form-container {
             background: white;
-            width: 100%; max-width: 600px;
+            width: 100%; max-width: 650px;
             border-radius: 24px;
             box-shadow: 0 25px 50px rgba(0,0,0,0.4);
             overflow: hidden;
             position: relative;
-            z-index: 1;
         }
 
         .logo-header {
             background-color: var(--dark);
             padding: 20px;
             text-align: center;
-            position: relative;
-            z-index: 2;
         }
 
         .brand-logo {
@@ -44,11 +41,7 @@
             margin: 0 auto;
         }
 
-        .content-area { 
-            padding: 30px; 
-            position: relative; 
-            z-index: 5; 
-        }
+        .content-area { padding: 30px; }
 
         .progress-container { height: 6px; background: #eee; width: 100%; }
         .progress-bar { height: 100%; width: 0%; background: var(--primary); transition: 0.4s; }
@@ -58,14 +51,11 @@
             gap: 15px; margin: 20px 0;
         }
 
-        /* BUTTON FIX: High Z-index and Pointer events */
         .opt-btn {
             padding: 18px; border: 2px solid #eee;
             background: white; border-radius: 12px;
             cursor: pointer; font-weight: 600;
             transition: all 0.2s ease; color: var(--dark);
-            position: relative;
-            z-index: 10;
         }
 
         .opt-btn:hover { border-color: var(--primary); background: #fff5fa; }
@@ -81,22 +71,26 @@
             background: linear-gradient(to right, var(--primary), var(--secondary));
             color: white; border: none; padding: 18px;
             border-radius: 12px; cursor: pointer; font-weight: bold;
-            width: 100%; font-size: 16px; margin-top: 10px;
+            width: 100%; font-size: 16px; margin-top: 20px;
         }
 
         .back-btn { background: #f0f0f0; border: none; padding: 18px; border-radius: 12px; cursor: pointer; font-weight: bold; flex: 1; }
 
         .btn-group { display: flex; gap: 10px; margin-top: 20px; }
 
-        .info-box { background: #fdf2f8; padding: 25px; border-radius: 15px; border-left: 5px solid var(--primary); margin-bottom: 20px; line-height: 1.6; color: #333; }
-        .info-box h3 { color: var(--secondary); margin-top: 0; }
+        .info-box { 
+            background: #fdf2f8; padding: 25px; border-radius: 15px; 
+            border-left: 5px solid var(--primary); margin-bottom: 20px; 
+            line-height: 1.6; color: #333; 
+        }
+
+        .info-box h3 { color: var(--secondary); margin-top: 0; border-bottom: 1px solid rgba(111, 66, 193, 0.2); padding-bottom: 5px; }
         .info-box h4 { color: var(--primary); margin: 15px 0 5px 0; }
 
-        .comparison-table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.85em; background: white; border-radius: 8px; overflow: hidden; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.82em; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .comparison-table th { background: var(--secondary); color: white; padding: 10px; text-align: left; }
         .comparison-table td { padding: 10px; border-bottom: 1px solid #eee; vertical-align: top; }
 
-        /* STEP LOGIC */
         .form-step { display: none; }
         .form-step.active { display: block !important; animation: fadeIn 0.4s; }
 
@@ -134,7 +128,7 @@
                 <div id="info-content"></div>
                 <div class="btn-group">
                     <button type="button" class="back-btn" onclick="moveStep(1)">Back</button>
-                    <button type="button" class="next-btn" onclick="moveStep(3)">Confirm & Next</button>
+                    <button type="button" class="next-btn" id="confirmNextBtn" onclick="moveStep(3)">Confirm & Next</button>
                 </div>
             </div>
 
@@ -161,178 +155,138 @@
     let selections = { service: '', zip: '' };
     const GHL_BASE_URL = "https://api.leadconnectorhq.com/widget/form/HSCelRuDZgou4EZ8Z6cB";
 
-    // Content for Step 2
-   const treatmentDetails = {
+    const treatmentDetails = {
         'Botox': `
             <div class="info-box">
                 <h3>Injectables & Rejuvenation</h3>
-                
                 <h4>Botox: Smooth & Refresh</h4>
-                <p><strong>The Goal:</strong> Relax the muscles that cause fine lines for a smoother, well-rested look.<br>
-                <strong>Best For:</strong> Forehead lines, crow’s feet, and frown lines.<br>
-                <strong>Results:</strong> Visible in 3–7 days; lasts 3–4 months.<br>
-                <strong>The Vibe:</strong> Preventative and softening. Perfect for those looking to stop wrinkles before they deepen.</p>
-                
+                <p><strong>Goal:</strong> Relax muscles that cause fine lines.<br>
+                <strong>Best For:</strong> Forehead lines, crow’s feet, and frown lines.</p>
+                <hr>
                 <h4>Dermal Fillers: Lift & Contour</h4>
-                <p><strong>The Goal:</strong> Restore lost volume and enhance facial structure using moisture-rich Hyaluronic Acid.<br>
-                <strong>Best For:</strong> Plumping lips, defining jawlines, and lifting cheeks.<br>
-                <strong>Results:</strong> Instant transformation; lasts 6–18 months.<br>
-                <strong>The Vibe:</strong> Sculpting and hydrating. Ideal for restoring the "plumpness" of youth or adding symmetry.</p>
-                
-                <h3>Which is right for me?</h3>
+                <p><strong>Goal:</strong> Restore volume using moisture-rich Hyaluronic Acid.</p>
                 <table class="comparison-table">
-                    <thead>
-                        <tr><th>Your Concern</th><th>Recommended Treatment</th></tr>
-                    </thead>
+                    <thead><tr><th>Your Concern</th><th>Recommended</th></tr></thead>
                     <tbody>
-                        <tr><td>Lines when I smile or squint</td><td>Botox</td></tr>
+                        <tr><td>Lines when I smile/squint</td><td>Botox</td></tr>
                         <tr><td>Hollow cheeks or thin lips</td><td>Fillers</td></tr>
-                        <tr><td>Deep folds around the mouth</td><td>Fillers (or a combination)</td></tr>
+                        <tr><td>Deep folds around mouth</td><td>Fillers (or combo)</td></tr>
                         <tr><td>"Etched" forehead lines</td><td>Botox</td></tr>
                     </tbody>
                 </table>
-                
                 <p><strong>Age Guide:</strong><br>
-                • <strong>20s - 30s:</strong> Focus on Prevention (Botox) and Enhancement (Lip Fillers).<br>
-                • <strong>40s+:</strong> Focus on Restoration (Fillers for volume) and Softening (Botox for deeper lines).</p>
+                • 20s-30s: Prevention (Botox) & Enhancement.<br>
+                • 40s+: Restoration (Fillers) & Softening (Botox).</p>
             </div>`,
-
         'Laser': `
             <div class="info-box">
                 <h3>Laser Skin Technologies</h3>
-                
                 <h4>Laser Resurfacing: Reveal & Renew</h4>
-                <p><strong>The Goal:</strong> Use concentrated light to remove damaged skin cells and trigger deep collagen production.<br>
-                <strong>Best For:</strong> Acne scars, deep wrinkles, sun spots, and uneven texture.<br>
-                <strong>Types:</strong> Ablative (1–2 weeks recovery) or Non-Ablative (Gentler rejuvenation).<br>
-                <strong>The Vibe:</strong> A "reset button" for your skin’s surface.</p>
-                
+                <p><strong>The Goal:</strong> Use concentrated light to remove damaged cells and trigger collagen.<br>
+                <strong>Best For:</strong> Acne scars, deep wrinkles, sun spots, and uneven texture.</p>
                 <h4>Laser Hair Removal: Smooth & Permanent</h4>
-                <p><strong>The Goal:</strong> Target hair follicles with light energy to stop growth at the root.<br>
-                <strong>Best For:</strong> Unwanted hair on the face, legs, underarms, or bikini line.<br>
-                <strong>Results:</strong> Requires 6–8 sessions; leads to permanent hair reduction.<br>
-                <strong>The Vibe:</strong> Freedom from daily shaving and painful waxing.</p>
-                
+                <p><strong>The Goal:</strong> Target follicles with light energy to stop growth at the root.</p>
                 <table class="comparison-table">
-                    <thead>
-                        <tr><th>Pros</th><th>Cons</th></tr>
-                    </thead>
+                    <thead><tr><th>Pros</th><th>Cons</th></tr></thead>
                     <tbody>
-                        <tr><td><strong>Laser Resurfacing:</strong> Dramatic improvement in scars/spots; long-term collagen boost.</td><td><strong>Laser Resurfacing:</strong> Temporary redness/peeling; requires strict sun protection.</td></tr>
-                        <tr><td><strong>Laser Hair Removal:</strong> Saves time/money long-term; prevents painful ingrown hairs.</td><td><strong>Laser Hair Removal:</strong> Multiple sessions needed; less effective on very light/gray hair.</td></tr>
+                        <tr><td>Dramatic scar improvement.</td><td>Temporary redness/peeling.</td></tr>
+                        <tr><td>Permanent hair freedom.</td><td>Multiple sessions required.</td></tr>
                     </tbody>
                 </table>
-                
                 <p><strong>Age Recommendations:</strong><br>
-                • <strong>20s - 30s:</strong> Laser Resurfacing for acne scarring; Hair Removal for long-term convenience.<br>
-                • <strong>40s - 50s+:</strong> Resurfacing to tighten skin and erase age spots or deep expression lines.</p>
+                • 20s-30s: Acne scarring correction; Hair Removal.<br>
+                • 40s-50s+: Skin tightening and erasing age spots.</p>
             </div>`,
-
         'Body': `
             <div class="info-box">
                 <h3>Body Contouring: Sculpt & Define</h3>
-                <p><strong>The Goal:</strong> Eliminate stubborn fat, tighten loose skin, and build muscle definition in areas that diet and exercise can’t reach.</p>
-                
+                <p><strong>The Goal:</strong> Eliminate stubborn fat, tighten skin, and build muscle definition without surgery.</p>
                 <h4>The Options</h4>
-                <p>• <strong>Non-Invasive:</strong> "Freezes" or "melts" fat cells without surgery (e.g., CoolSculpting).<br>
-                • <strong>Muscle Toning (EMS):</strong> 20,000 muscle contractions in 30 minutes.<br>
-                • <strong>Skin Tightening (RF):</strong> Heats deep layers to "shrink-wrap" loose areas.</p>
-                
-                <h3>Candidacy: Age & Size</h3>
+                <p>• <strong>Non-Invasive:</strong> Freezes or melts fat cells (CoolSculpting).<br>
+                • <strong>Muscle Toning (EMS):</strong> 20,000 crunches in 30 mins.<br>
+                • <strong>Skin Tightening:</strong> RF heat to stimulate collagen.</p>
                 <table class="comparison-table">
-                    <thead>
-                        <tr><th>Profile</th><th>Focus Area</th><th>Best Treatment</th></tr>
-                    </thead>
+                    <thead><tr><th>Profile</th><th>Focus</th><th>Best Treatment</th></tr></thead>
                     <tbody>
-                        <tr><td>20s – 30s</td><td>Enhancement</td><td>Lipo or Fat Freezing for trouble spots.</td></tr>
-                        <tr><td>Post-Pregnancy</td><td>Restoration</td><td>EMS to repair abdominal separation.</td></tr>
-                        <tr><td>40s – 50s</td><td>Toning</td><td>RF for laxity and Laser Lipo for fat.</td></tr>
-                        <tr><td>60s+</td><td>Maintenance</td><td>RF Tightening and Lymphatic drainage.</td></tr>
+                        <tr><td>20s-30s</td><td>Enhancement</td><td>Lipo or Cryolipolysis</td></tr>
+                        <tr><td>Post-Pregnancy</td><td>Restoration</td><td>EMS / Muscle Toning</td></tr>
+                        <tr><td>40s-50s</td><td>Toning</td><td>RF Tightening / Laser Lipo</td></tr>
+                        <tr><td>60s+</td><td>Maintenance</td><td>RF / Lymphatic Drainage</td></tr>
                     </tbody>
                 </table>
-                
-                <p><strong>The "Size" Rule:</strong><br>
-                • <strong>Best Results:</strong> Candidates within 30 lbs of goal weight (BMI under 30).<br>
-                • <strong>Higher BMIs:</strong> Focus on lymphatic drainage and skin-firming to reduce bloating during weight loss.</p>
-                
+                <p><strong>The "Size" Rule:</strong> Best for those within 30 lbs of goal weight.</p>
                 <table class="comparison-table">
-                    <thead>
-                        <tr><th>Pros</th><th>Cons</th></tr>
-                    </thead>
+                    <thead><tr><th>Pros</th><th>Cons</th></tr></thead>
                     <tbody>
-                        <tr><td>Permanent fat cell removal; no downtime.</td><td>Not for weight loss; requires stable lifestyle.</td></tr>
-                        <tr><td>No gym required for "sculpted" look.</td><td>Multiple sessions (2–4) often required.</td></tr>
+                        <tr><td>Permanent fat cell removal.</td><td>Not a weight-loss solution.</td></tr>
+                        <tr><td>No gym required for sculpt.</td><td>Surgical options require recovery.</td></tr>
                     </tbody>
                 </table>
             </div>`,
-
         'Skin': `
             <div class="info-box">
                 <h3>Facials & Chemical Peels</h3>
-                
                 <h4>Professional Facials: Glow & Maintain</h4>
-                <p><strong>The Goal:</strong> Multi-step cleansing, exfoliation, and extractions to maintain skin health.<br>
-                <strong>Best For:</strong> Congested pores, dehydration, and general skin dullness.<br>
-                <strong>Experience:</strong> Relaxing, non-invasive, and immediate "glow" results.<br>
-                <strong>Frequency:</strong> Recommended every 4–6 weeks.</p>
-                
+                <p><strong>Goal:</strong> cleansing, exfoliation, and extractions to maintain skin health.<br>
+                <strong>Best For:</strong> Congested pores and dullness.</p>
                 <h4>Chemical Peels: Correct & Refine</h4>
-                <p><strong>The Goal:</strong> Shed top layers to reveal fresh skin using clinical solutions (AHAs, BHAs, TCA).<br>
-                <strong>Best For:</strong> Hyperpigmentation, active acne, fine lines, and sun damage.<br>
-                <strong>Results:</strong> Improved clarity and much smoother texture over 7–10 days.</p>
-                
+                <p><strong>Goal:</strong> Shed top layers of skin to reveal a fresh layer underneath.<br>
+                <strong>Result:</strong> Improved clarity and texture over 7–10 days.</p>
                 <table class="comparison-table">
-                    <thead>
-                        <tr><th>Pros</th><th>Cons</th></tr>
-                    </thead>
+                    <thead><tr><th>Treatment</th><th>Pros</th><th>Cons</th></tr></thead>
                     <tbody>
-                        <tr><td><strong>Facials:</strong> Zero downtime; highly relaxing; customized.</td><td><strong>Facials:</strong> Results are more subtle
+                        <tr><td>Facials</td><td>Zero downtime; relaxing.</td><td>Subtle results.</td></tr>
+                        <tr><td>Chemical Peels</td><td>Targets deep-rooted pigment.</td><td>Visible peeling/redness.</td></tr>
+                    </tbody>
+                </table>
+                <p><strong>Age Guide:</strong><br>
+                • Teens-20s: Clearance (Oil control/Acne).<br>
+                • 30s-40s: Vitality (Hydration/Fine lines).<br>
+                • 50s+: Restoration (Firming/TCA Peels).</p>
+            </div>`
+    };
+
     function handleSelection(btn, serviceKey) {
-        // 1. Save state
+        // Clear all selections
+        document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+        
+        // Mark this one as selected
+        btn.classList.add('selected');
         selections.service = serviceKey;
 
-        // 2. Remove 'selected' from all and add to clicked
-        document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-
-        // 3. Force Next button visibility
+        // Show Next button for Step 1
         const nextBtn = document.getElementById('nextStep1Btn');
         nextBtn.style.display = 'block';
 
-        // 4. Update Step 2 text
+        // Update Step 2 text
         document.getElementById('info-title').innerText = btn.innerText;
         document.getElementById('info-content').innerHTML = treatmentDetails[serviceKey];
+
+        // AUTO-SCROLL FIX: Scroll down to show the Next button
+        nextBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     function moveStep(targetStep) {
-        // Hide current
         document.getElementById('step' + currentStep).classList.remove('active');
-        
-        // Update number
         currentStep = targetStep;
-
-        // If going to Iframe, load it
-        if (currentStep === 4) {
-            const finalUrl = `${GHL_BASE_URL}?requested_service=${encodeURIComponent(selections.service)}&zip=${encodeURIComponent(selections.zip)}`;
-            document.getElementById('ghl-iframe').src = finalUrl;
-        }
-
-        // Show new
         document.getElementById('step' + currentStep).classList.add('active');
 
-        // Update progress bar
+        if (currentStep === 4) {
+            document.getElementById('ghl-iframe').src = `${GHL_BASE_URL}?requested_service=${encodeURIComponent(selections.service)}&zip=${encodeURIComponent(selections.zip)}`;
+        }
+
         const percentage = ((currentStep - 1) / 3) * 100;
         document.getElementById('progress').style.width = percentage + "%";
-        
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function saveZipAndNext() {
-        const zip = document.getElementById('zipInput').value;
-        if(!zip) return alert("Please enter your zip code");
-        selections.zip = zip;
+        const val = document.getElementById('zipInput').value;
+        if(!val) return alert("Please enter your zip code");
+        selections.zip = val;
         moveStep(4);
     }
 </script>
+
 </body>
 </html>
