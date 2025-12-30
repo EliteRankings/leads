@@ -162,79 +162,131 @@
     const GHL_BASE_URL = "https://api.leadconnectorhq.com/widget/form/HSCelRuDZgou4EZ8Z6cB";
 
     // Content for Step 2
-    const treatmentDetails = {
+   const treatmentDetails = {
         'Botox': `
             <div class="info-box">
                 <h3>Injectables & Rejuvenation</h3>
+                
                 <h4>Botox: Smooth & Refresh</h4>
-                <p><strong>The Goal:</strong> Relax muscles for a smoother look.<br>
+                <p><strong>The Goal:</strong> Relax the muscles that cause fine lines for a smoother, well-rested look.<br>
                 <strong>Best For:</strong> Forehead lines, crow’s feet, and frown lines.<br>
-                <strong>Results:</strong> Visible in 3–7 days; lasts 3–4 months.</p>
-                <hr>
+                <strong>Results:</strong> Visible in 3–7 days; lasts 3–4 months.<br>
+                <strong>The Vibe:</strong> Preventative and softening. Perfect for those looking to stop wrinkles before they deepen.</p>
+                
                 <h4>Dermal Fillers: Lift & Contour</h4>
-                <p><strong>The Goal:</strong> Restore volume using Hyaluronic Acid.<br>
-                <strong>Best For:</strong> Lips, jawlines, and cheeks.<br>
-                <strong>Results:</strong> Instant transformation; lasts 6–18 months.</p>
+                <p><strong>The Goal:</strong> Restore lost volume and enhance facial structure using moisture-rich Hyaluronic Acid.<br>
+                <strong>Best For:</strong> Plumping lips, defining jawlines, and lifting cheeks.<br>
+                <strong>Results:</strong> Instant transformation; lasts 6–18 months.<br>
+                <strong>The Vibe:</strong> Sculpting and hydrating. Ideal for restoring the "plumpness" of youth or adding symmetry.</p>
+                
+                <h3>Which is right for me?</h3>
                 <table class="comparison-table">
-                    <thead><tr><th>Concern</th><th>Recommended</th></tr></thead>
+                    <thead>
+                        <tr><th>Your Concern</th><th>Recommended Treatment</th></tr>
+                    </thead>
                     <tbody>
-                        <tr><td>Lines when smiling</td><td>Botox</td></tr>
-                        <tr><td>Thin lips/Hollow cheeks</td><td>Fillers</td></tr>
+                        <tr><td>Lines when I smile or squint</td><td>Botox</td></tr>
+                        <tr><td>Hollow cheeks or thin lips</td><td>Fillers</td></tr>
+                        <tr><td>Deep folds around the mouth</td><td>Fillers (or a combination)</td></tr>
                         <tr><td>"Etched" forehead lines</td><td>Botox</td></tr>
                     </tbody>
                 </table>
-                <p><strong>Age Guide:</strong><br>• 20s-30s: Prevention.<br>• 40s+: Restoration.</p>
+                
+                <p><strong>Age Guide:</strong><br>
+                • <strong>20s - 30s:</strong> Focus on Prevention (Botox) and Enhancement (Lip Fillers).<br>
+                • <strong>40s+:</strong> Focus on Restoration (Fillers for volume) and Softening (Botox for deeper lines).</p>
             </div>`,
+
         'Laser': `
-           <div class="info-box">
+            <div class="info-box">
                 <h3>Laser Skin Technologies</h3>
+                
                 <h4>Laser Resurfacing: Reveal & Renew</h4>
-                <p><strong>The Goal:</strong> Use concentrated light to remove damaged cells and trigger collagen production.<br>
+                <p><strong>The Goal:</strong> Use concentrated light to remove damaged skin cells and trigger deep collagen production.<br>
                 <strong>Best For:</strong> Acne scars, deep wrinkles, sun spots, and uneven texture.<br>
-                <strong>Types:</strong> Ablative (1–2 weeks recovery) or Non-Ablative (Gentler rejuvenation).</p>
+                <strong>Types:</strong> Ablative (1–2 weeks recovery) or Non-Ablative (Gentler rejuvenation).<br>
+                <strong>The Vibe:</strong> A "reset button" for your skin’s surface.</p>
                 
                 <h4>Laser Hair Removal: Smooth & Permanent</h4>
-                <p><strong>The Goal:</strong> Target hair follicles to stop growth at the root.<br>
-                <strong>Results:</strong> Requires 6–8 sessions; leads to permanent reduction.</p>
-
+                <p><strong>The Goal:</strong> Target hair follicles with light energy to stop growth at the root.<br>
+                <strong>Best For:</strong> Unwanted hair on the face, legs, underarms, or bikini line.<br>
+                <strong>Results:</strong> Requires 6–8 sessions; leads to permanent hair reduction.<br>
+                <strong>The Vibe:</strong> Freedom from daily shaving and painful waxing.</p>
+                
                 <table class="comparison-table">
-                    <thead><tr><th>Treatment</th><th>Pros</th><th>Cons</th></tr></thead>
+                    <thead>
+                        <tr><th>Pros</th><th>Cons</th></tr>
+                    </thead>
                     <tbody>
-                        <tr><td>Resurfacing</td><td>Dramatic scar improvement; collagen boost.</td><td>Redness/peeling; requires sun protection.</td></tr>
-                        <tr><td>Hair Removal</td><td>Saves time/money; prevents ingrown hairs.</td><td>Multiple sessions; less effective on light/gray hair.</td></tr>
+                        <tr><td><strong>Laser Resurfacing:</strong> Dramatic improvement in scars/spots; long-term collagen boost.</td><td><strong>Laser Resurfacing:</strong> Temporary redness/peeling; requires strict sun protection.</td></tr>
+                        <tr><td><strong>Laser Hair Removal:</strong> Saves time/money long-term; prevents painful ingrown hairs.</td><td><strong>Laser Hair Removal:</strong> Multiple sessions needed; less effective on very light/gray hair.</td></tr>
                     </tbody>
                 </table>
+                
                 <p><strong>Age Recommendations:</strong><br>
-                • <strong>20s-30s:</strong> Clearing acne scarring or starting hair removal.<br>
-                • <strong>40s-50s+:</strong> Tightening skin and erasing age spots.</p>
+                • <strong>20s - 30s:</strong> Laser Resurfacing for acne scarring; Hair Removal for long-term convenience.<br>
+                • <strong>40s - 50s+:</strong> Resurfacing to tighten skin and erase age spots or deep expression lines.</p>
             </div>`,
+
         'Body': `
             <div class="info-box">
                 <h3>Body Contouring: Sculpt & Define</h3>
-                <p><strong>The Goal:</strong> Eliminate stubborn fat and tone muscle without surgery.</p>
+                <p><strong>The Goal:</strong> Eliminate stubborn fat, tighten loose skin, and build muscle definition in areas that diet and exercise can’t reach.</p>
+                
+                <h4>The Options</h4>
+                <p>• <strong>Non-Invasive:</strong> "Freezes" or "melts" fat cells without surgery (e.g., CoolSculpting).<br>
+                • <strong>Muscle Toning (EMS):</strong> 20,000 muscle contractions in 30 minutes.<br>
+                • <strong>Skin Tightening (RF):</strong> Heats deep layers to "shrink-wrap" loose areas.</p>
+                
+                <h3>Candidacy: Age & Size</h3>
                 <table class="comparison-table">
-                    <thead><tr><th>Pros</th><th>Cons</th></tr></thead>
+                    <thead>
+                        <tr><th>Profile</th><th>Focus Area</th><th>Best Treatment</th></tr>
+                    </thead>
                     <tbody>
-                        <tr><td>No Downtime.</td><td>Multiple sessions.</td></tr>
-                        <tr><td>Permanent Fat Loss.</td><td>Not for weight loss.</td></tr>
+                        <tr><td>20s – 30s</td><td>Enhancement</td><td>Lipo or Fat Freezing for trouble spots.</td></tr>
+                        <tr><td>Post-Pregnancy</td><td>Restoration</td><td>EMS to repair abdominal separation.</td></tr>
+                        <tr><td>40s – 50s</td><td>Toning</td><td>RF for laxity and Laser Lipo for fat.</td></tr>
+                        <tr><td>60s+</td><td>Maintenance</td><td>RF Tightening and Lymphatic drainage.</td></tr>
                     </tbody>
                 </table>
-                <p><strong>Rule of Thumb:</strong> Best for clients within 15–30 lbs of goal weight.</p>
+                
+                <p><strong>The "Size" Rule:</strong><br>
+                • <strong>Best Results:</strong> Candidates within 30 lbs of goal weight (BMI under 30).<br>
+                • <strong>Higher BMIs:</strong> Focus on lymphatic drainage and skin-firming to reduce bloating during weight loss.</p>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr><th>Pros</th><th>Cons</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Permanent fat cell removal; no downtime.</td><td>Not for weight loss; requires stable lifestyle.</td></tr>
+                        <tr><td>No gym required for "sculpted" look.</td><td>Multiple sessions (2–4) often required.</td></tr>
+                    </tbody>
+                </table>
             </div>`,
+
         'Skin': `
             <div class="info-box">
                 <h3>Facials & Chemical Peels</h3>
-                <p><strong>The Goal:</strong> Correct issues like hyperpigmentation and active acne while maintaining a healthy glow.</p>
+                
+                <h4>Professional Facials: Glow & Maintain</h4>
+                <p><strong>The Goal:</strong> Multi-step cleansing, exfoliation, and extractions to maintain skin health.<br>
+                <strong>Best For:</strong> Congested pores, dehydration, and general skin dullness.<br>
+                <strong>Experience:</strong> Relaxing, non-invasive, and immediate "glow" results.<br>
+                <strong>Frequency:</strong> Recommended every 4–6 weeks.</p>
+                
+                <h4>Chemical Peels: Correct & Refine</h4>
+                <p><strong>The Goal:</strong> Shed top layers to reveal fresh skin using clinical solutions (AHAs, BHAs, TCA).<br>
+                <strong>Best For:</strong> Hyperpigmentation, active acne, fine lines, and sun damage.<br>
+                <strong>Results:</strong> Improved clarity and much smoother texture over 7–10 days.</p>
+                
                 <table class="comparison-table">
-                    <thead><tr><th>Treatment</th><th>Pros</th><th>Cons</th></tr></thead>
+                    <thead>
+                        <tr><th>Pros</th><th>Cons</th></tr>
+                    </thead>
                     <tbody>
-                        <tr><td>Facials</td><td>Zero downtime; relaxing.</td><td>Subtle results.</td></tr>
-                        <tr><td>Peels</td><td>Targets deep-rooted pigment.</td><td>Visible peeling.</td></tr>
-                    </tbody>
-                </table>
-            </div>`
-    };
-
+                        <tr><td><strong>Facials:</strong> Zero downtime; highly relaxing; customized.</td><td><strong>Facials:</strong> Results are more subtle
     function handleSelection(btn, serviceKey) {
         // 1. Save state
         selections.service = serviceKey;
