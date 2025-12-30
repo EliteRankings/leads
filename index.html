@@ -57,7 +57,6 @@
             transition: all 0.2s ease; color: var(--dark);
         }
 
-        /* FIXED: Force selection style */
         .opt-btn.selected {
             background-color: var(--secondary) !important;
             color: white !important;
@@ -79,7 +78,6 @@
 
         .btn-group { display: flex; gap: 10px; margin-top: 20px; }
 
-        /* INFO BOX STYLING */
         .info-box {
             background: #fdf2f8; padding: 25px;
             border-radius: 15px; border-left: 5px solid var(--primary);
@@ -87,87 +85,4 @@
             color: #333;
         }
 
-        .info-box h3 { color: var(--secondary); margin-top: 0; }
-
-        /* TABLE STYLING */
-        .comparison-table {
-            width: 100%; border-collapse: collapse; margin: 15px 0;
-            font-size: 0.9em; background: white; border-radius: 8px; overflow: hidden;
-        }
-        .comparison-table th { background: var(--secondary); color: white; padding: 10px; text-align: left; }
-        .comparison-table td { padding: 10px; border-bottom: 1px solid #eee; }
-
-        .form-step { display: none; }
-        .form-step.active { display: block; animation: fadeIn 0.4s; }
-
-        input {
-            width: 100%; padding: 15px; border: 2px solid #eee;
-            border-radius: 12px; margin-bottom: 10px; box-sizing: border-box;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
-</head>
-<body>
-
-<div class="form-container">
-    <div class="logo-header">
-        <img src="images/logoback.png" alt="Elite Rankings" class="brand-logo">
-    </div>
-
-    <div class="progress-container">
-        <div class="progress-bar" id="progress"></div>
-    </div>
-
-    <div class="content-area">
-        <div id="multiStepForm">
-            <div class="form-step active" id="step1">
-                <h2 style="margin-top:0;">Select a treatment you are interested in</h2>
-                <div class="option-grid">
-                    <button type="button" class="opt-btn" onclick="handleSelect(this, 'Botox')">Botox & Fillers</button>
-                    <button type="button" class="opt-btn" onclick="handleSelect(this, 'Laser')">Laser Treatments</button>
-                    <button type="button" class="opt-btn" onclick="handleSelect(this, 'Body')">Body Contouring</button>
-                    <button type="button" class="opt-btn" onclick="handleSelect(this, 'Skin')">Facials & Peels</button>
-                </div>
-                <button type="button" class="next-btn" id="nextStep1Btn" style="display:none;" onclick="moveStep(2)">Next</button>
-            </div>
-
-            <div class="form-step" id="step2">
-                <h2 id="info-title">Treatment Details</h2>
-                <div id="info-content"></div>
-                <div class="btn-group">
-                    <button type="button" class="back-btn" onclick="moveStep(1)">Back</button>
-                    <button type="button" class="next-btn" onclick="moveStep(3)">Confirm & Next</button>
-                </div>
-            </div>
-
-            <div class="form-step" id="step3">
-                <h2>Your Location</h2>
-                <p>Where should we find providers for you?</p>
-                <input type="text" id="zipInput" placeholder="Enter Zip Code">
-                <div class="btn-group">
-                    <button type="button" class="back-btn" onclick="moveStep(2)">Back</button>
-                    <button type="button" class="next-btn" onclick="saveZipAndNext()">Next</button>
-                </div>
-            </div>
-
-            <div class="form-step" id="step4">
-                <h2>Final Details</h2>
-                <iframe id="ghl-iframe" src="" style="width:100%; height:850px; border:none; border-radius:8px;" scrolling="auto"></iframe>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    let currentStep = 1;
-    let selections = { service: '', zip: '' };
-    const GHL_BASE_URL = "https://api.leadconnectorhq.com/widget/form/HSCelRuDZgou4EZ8Z6cB";
-
-    // Detailed Info Content
-    const treatmentDetails = {
-        'Botox': `
-            <div class="info-box">
-                <h3>Injectables & Rejuvenation</h3>
-                <strong>Botox: Smooth & Refresh</strong><br>
-                <p><strong>The Goal:</strong> Relax the muscles that cause fine lines for a smoother
+        .info-box h3 { color: var(--secondary); margin-top: 0; border-bottom: 1px solid rgba(111, 66, 193, 0.2); padding-bottom
