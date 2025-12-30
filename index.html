@@ -25,6 +25,8 @@
             border-radius: 24px;
             box-shadow: 0 25px 50px rgba(0,0,0,0.4);
             overflow: hidden;
+            position: relative; /* Fixed: Keeps stacking order correct */
+            z-index: 1;
         }
 
         .logo-header {
@@ -40,11 +42,12 @@
             margin: 0 auto;
         }
 
-        .content-area { padding: 30px; }
+        .content-area { padding: 30px; position: relative; z-index: 10; }
 
         .progress-container { height: 6px; background: #eee; width: 100%; }
         .progress-bar { height: 100%; width: 0%; background: var(--primary); transition: 0.4s; }
 
+        /* BUTTON FIXES */
         .option-grid {
             display: grid; grid-template-columns: 1fr 1fr;
             gap: 15px; margin: 20px 0;
@@ -55,34 +58,15 @@
             background: white; border-radius: 12px;
             cursor: pointer; font-weight: 600;
             transition: all 0.2s ease; color: var(--dark);
+            position: relative; z-index: 20; /* Ensures button is on top */
         }
 
+        /* Hoover State */
+        .opt-btn:hover { border-color: var(--primary); background: #fff5fa; }
+
+        /* Selected State - Forced with !important */
         .opt-btn.selected {
             background-color: var(--secondary) !important;
             color: white !important;
             border-color: var(--secondary) !important;
-            box-shadow: 0 5px 15px rgba(111, 66, 193, 0.4);
-        }
-
-        .next-btn {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: white; border: none; padding: 18px;
-            border-radius: 12px; cursor: pointer; font-weight: bold;
-            width: 100%; font-size: 16px;
-        }
-
-        .back-btn {
-            background: #f0f0f0; border: none; padding: 18px;
-            border-radius: 12px; cursor: pointer; font-weight: bold; flex: 1;
-        }
-
-        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
-
-        .info-box {
-            background: #fdf2f8; padding: 25px;
-            border-radius: 15px; border-left: 5px solid var(--primary);
-            margin-bottom: 20px; line-height: 1.6;
-            color: #333;
-        }
-
-        .info-box h3 { color: var(--secondary); margin-top: 0; border-bottom: 1px solid rgba(111, 66, 193, 0.2); padding-bottom
+            box-shadow:
