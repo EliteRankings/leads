@@ -6,8 +6,8 @@
     <title>Elite Rankings | MedSpa Quotes</title>
     <style>
         :root {
-            --primary: #d63384; /* Elite Pink */
-            --secondary: #6f42c1; /* Elite Purple */
+            --primary: #d63384; 
+            --secondary: #6f42c1; 
             --dark: #2d1b33;
             --light: #fdfcfe;
         }
@@ -50,20 +50,31 @@
             gap: 15px; margin: 20px 0;
         }
 
+        /* BUTTON STYLES */
         .opt-btn {
-            padding: 15px; border: 2px solid #eee;
-            background: white; border-radius: 12px;
-            cursor: pointer; font-weight: 600;
-            transition: all 0.2s; color: var(--dark);
+            padding: 18px; 
+            border: 2px solid #eee;
+            background: white; 
+            border-radius: 12px;
+            cursor: pointer; 
+            font-weight: 600;
+            transition: all 0.2s ease; 
+            color: var(--dark);
+            outline: none;
         }
 
-        .opt-btn:hover { border-color: var(--primary); background: #fff5fa; }
+        .opt-btn:hover { 
+            border-color: var(--primary); 
+            background: #fff5fa; 
+        }
 
+        /* THIS IS THE FIXED SELECTION STYLE */
         .opt-btn.selected {
-            background: var(--secondary) !important;
+            background-color: var(--secondary) !important;
             color: white !important;
             border-color: var(--secondary) !important;
-            box-shadow: 0 8px 15px rgba(111, 66, 193, 0.3);
+            box-shadow: 0 8px 15px rgba(111, 66, 193, 0.4);
+            transform: translateY(-2px);
         }
 
         .next-btn {
@@ -113,10 +124,10 @@
             <div class="form-step active" id="step1">
                 <h2 style="margin-top:0;">Select a Treatment</h2>
                 <div class="option-grid">
-                    <button type="button" class="opt-btn" id="btn-Botox" onclick="setService('Botox', 'Botox & Fillers', 'Botox and dermal fillers are non-surgical treatments designed to diminish facial lines and restore volume.')">Botox & Fillers</button>
-                    <button type="button" class="opt-btn" id="btn-Laser" onclick="setService('Laser', 'Laser Treatments', 'Advanced laser hair reduction and skin resurfacing to treat sun damage and acne scars.')">Laser Treatments</button>
-                    <button type="button" class="opt-btn" id="btn-Body" onclick="setService('Body', 'Body Contouring', 'Non-invasive fat reduction and muscle toning to shape the body.')">Body Contouring</button>
-                    <button type="button" class="opt-btn" id="btn-Skin" onclick="setService('Skin', 'Facials & Peels', 'Medical-grade peels and clinical facials for deep exfoliation and skin rejuvenation.')">Facials & Peels</button>
+                    <button type="button" class="opt-btn" id="btn-Botox" onclick="setService('Botox', 'Botox & Fillers', 'Botox and dermal fillers help smooth wrinkles and restore volume for a youthful glow.')">Botox & Fillers</button>
+                    <button type="button" class="opt-btn" id="btn-Laser" onclick="setService('Laser', 'Laser Treatments', 'Advanced laser hair reduction and skin resurfacing to treat sun damage.')">Laser Treatments</button>
+                    <button type="button" class="opt-btn" id="btn-Body" onclick="setService('Body', 'Body Contouring', 'Non-invasive technologies to shape and tone the body.')">Body Contouring</button>
+                    <button type="button" class="opt-btn" id="btn-Skin" onclick="setService('Skin', 'Facials & Peels', 'Medical-grade peels and clinical facials for deep rejuvenation.')">Facials & Peels</button>
                 </div>
                 <button type="button" class="next-btn" id="next1" style="display:none;" onclick="moveStep(2)">Next</button>
             </div>
@@ -128,83 +139,10 @@
                 </div>
                 <div class="btn-group">
                     <button type="button" class="back-btn" onclick="moveStep(1)">Back</button>
-                    <button type="button" class="next-btn" onclick="moveStep(3)">Looks Good, Next</button>
+                    <button type="button" class="next-btn" onclick="moveStep(3)">Confirm & Next</button>
                 </div>
             </div>
 
             <div class="form-step" id="step3">
                 <h2>Your Location</h2>
-                <p>Where should we find providers for you?</p>
-                <input type="text" id="zipInput" placeholder="Enter Zip Code">
-                <div class="btn-group">
-                    <button type="button" class="back-btn" onclick="moveStep(2)">Back</button>
-                    <button type="button" class="next-btn" onclick="saveZipAndNext()">Next</button>
-                </div>
-            </div>
-
-            <div class="form-step" id="step4">
-                <h2>Final Details</h2>
-                <p>Complete the form to receive your custom quotes:</p>
-                <iframe id="ghl-iframe" src="" style="width:100%; height:850px; border:none; border-radius:8px;" scrolling="auto"></iframe>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    let currentStep = 1;
-    const totalSteps = 4;
-    let selections = {
-        requested_service: '',
-        display_name: '',
-        zip: '',
-        description: ''
-    };
-
-    const GHL_BASE_URL = "https://api.leadconnectorhq.com/widget/form/HSCelRuDZgou4EZ8Z6cB";
-
-    function setService(id, displayName, desc) {
-        selections.requested_service = id;
-        selections.display_name = displayName;
-        selections.description = desc;
-        
-        // Update UI styling
-        document.querySelectorAll('.opt-btn').forEach(btn => btn.classList.remove('selected'));
-        const clickedBtn = document.getElementById('btn-' + id);
-        if (clickedBtn) clickedBtn.classList.add('selected');
-        
-        // Show Next button and prepare info for Step 2
-        document.getElementById('next1').style.display = 'block';
-        document.getElementById('info-title').innerText = displayName;
-        document.getElementById('info-text').innerText = desc;
-    }
-
-    function moveStep(targetStep) {
-        document.getElementById('step' + currentStep).classList.remove('active');
-        currentStep = targetStep;
-        
-        if (currentStep === 4) {
-            // Force reload iframe with parameters
-            const finalUrl = `${GHL_BASE_URL}?requested_service=${encodeURIComponent(selections.requested_service)}&zip=${encodeURIComponent(selections.zip)}`;
-            document.getElementById('ghl-iframe').src = finalUrl;
-        }
-        
-        document.getElementById('step' + currentStep).classList.add('active');
-        updateProgress();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function saveZipAndNext() {
-        const zipVal = document.getElementById('zipInput').value;
-        if(!zipVal) return alert("Please enter a zip code");
-        selections.zip = zipVal;
-        moveStep(4);
-    }
-
-    function updateProgress() {
-        const percentage = ((currentStep - 1) / (totalSteps - 1)) * 100;
-        document.getElementById('progress').style.width = percentage + "%";
-    }
-</script>
-</body>
-</html>
+                <p>Where should we
